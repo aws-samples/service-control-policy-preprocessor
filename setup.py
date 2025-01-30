@@ -21,7 +21,7 @@ def read(fname):
 version = get_version('scp_preprocessor/version.py')
 
 setuptools.setup(
-    name="scp-pre",
+    name="service-control-policy-preprocessor",
     packages=setuptools.find_packages(exclude=["*.tests", "*_tests"]),
     version=version,
     author="matluttr",
