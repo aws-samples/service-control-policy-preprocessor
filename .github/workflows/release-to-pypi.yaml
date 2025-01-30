@@ -33,7 +33,7 @@ jobs:
       - release-build
     environment:
       name: pypi
-      url: https://test.pypi.org/p/service-control-policy-preprocessor
+      url: https://pypi.org/p/service-control-policy-preprocessor
     permissions:
       id-token: write
 
@@ -46,6 +46,3 @@ jobs:
 
       - name: Publish release distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          verbose: true
