@@ -1,0 +1,12 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Sid": "DenyIAMUsers",
+        "Effect": "Deny",
+        "Action": [
+            "iam:*User*",
+            "iam:{Exclude:ListUsers}"
+        ],
+        "Resource": "*"
+    }]
+}

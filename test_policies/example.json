@@ -1,0 +1,598 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ProtectStacksets",
+            "Effect": "Deny",
+            "Action": [
+                "cloudformation:CancelUpdateStack",
+                "cloudformation:ContinueUpdateRollback",
+                "cloudformation:Create*",
+                "cloudformation:Delete*",
+                "cloudformation:Detect*",
+                "cloudformation:ExecuteChangeSet",
+                "cloudformation:RecordHandlerProgress",
+                "cloudformation:SetStackPolicy",
+                "cloudformation:SignalResource",
+                "cloudformation:TagResource",
+                "cloudformation:UntagResource",
+                "cloudformation:Update*"
+            ],
+            "Resource": "arn:aws:cloudformation:*:*:stack/StackSet-*ControlTower*",
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/stacksets-exec-*"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "ProtectNetworking",
+            "Effect": "Deny",
+            "Action": [
+                "ec2:AssociateAddress",
+                "ec2:{Write}{*Import*}",
+                "ec2:A*Vpc*",
+                "ec2:C*Vpc*",
+                "ec2:Del*Vpc*",
+                "ec2:Det*Vpc*",
+                "ec2:Di*Vpc*",
+                "ec2:E*Vpc*",
+                "ec2:M*Vpc*",
+                "ec2:R*Vpc*",
+                "ec2:S*Vpc*",
+                "ec2:DeleteSubnet",
+                "ec2:C*Subnet*",
+                "ec2:AssociateSubnetCidrBlock",
+                "ec2:DisassociateSubnetCidrBlock",
+                "ec2:ModifySubnetAttribute",
+                "ec2:Associate*Route*",
+                "ec2:Create*Route*",
+                "ec2:Delete*Route*",
+                "ec2:Disable*Route*",
+                "ec2:Disassociate*Route*",
+                "ec2:Enable*Route*",
+                "ec2:Export*Route*",
+                "ec2:Replace*Route*",
+                "ec2:{Write}{*DHCP*}",
+                "ec2:Accept*Gateway*",
+                "ec2:Associate*Gateway*",
+                "ec2:Create*Gateway*",
+                "ec2:Delete*Gateway*",
+                "ec2:Deregister*Gateway*",
+                "ec2:Disable*Gateway*",
+                "ec2:Disassociate*Gateway*",
+                "ec2:Enable*Gateway*",
+                "ec2:Export*Gateway*",
+                "ec2:Modify*Gateway*",
+                "ec2:Register*Gateway*",
+                "ec2:Reject*Gateway*",
+                "ec2:Replace*Gateway*",
+                "ec2:{Write}{*Acl*}",
+                "ec2:{Write}{*Vpn*}",
+                "ec2:{Write}{*TrafficMirror*}",
+                "network-firewall:*",
+                "fms:*",
+                "account:*",
+                "activate:*",
+                "aws-portal:Modify*",
+                "route53resolver:*",
+                "organizations:*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/aws-controltower-ConfigRecorderRole"
+                    ]
+                },
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA",
+                    "aws:PrincipalTag/generic-security-controls-exception": "true"
+                }
+             }
+        },
+        {
+            "Sid": "DenyInEndpointSubnets",
+            "Effect": "Deny",
+            "Action": [
+                "ec2:RunInstances"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringLike": {
+                    "aws:ResourceTag/Name": "*endpoints-subnet*"
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "ProtectCloudTrail",
+            "Effect": "Deny",
+            "Action": [
+                "cloudtrail:{Write}"
+            ],
+            "Resource": [
+                "arn:aws:cloudtrail:*:*:trail/trail-*-protected-*",
+                "arn:aws:cloudtrail:*:*:trail/aws-controltower*"
+            ],
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/aws-controltower-ConfigRecorderRole"
+                    ]
+                },
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                }
+             }
+        },
+        {
+            "Sid": "ProtectLambdas",
+            "Effect": "Deny",
+            "Action": [
+                "lambda:{Permissions management}",
+                "lambda:{Write}",
+                "lambda:{Tagging}"
+            ],
+            "Resource": [
+                "arn:aws:lambda:*:*:function:aws-controltower*"
+            ],
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                },
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                }
+             }
+        },
+        {
+            "Sid": "DenyAWSConfig",
+            "Effect": "Deny",
+            "Action": [
+                "config:Delete*",
+                "config:Stop*",
+                "config:Start*",
+                "config:{Tagging}"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+             }
+        },
+        {
+            "Sid": "DenyPutEvaluations",
+            "Effect": "Deny",
+            "Action": [
+                "config:PutEvaluations"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/aws-controltower-ConfigRecorderRole"
+                    ]
+                },
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                }
+             }
+        },
+        {
+            "Sid": "DenySecurity",
+            "Effect": "Deny",
+            "Action": [
+                "guardduty:AcceptInvitation",
+                "guardduty:C*",
+                "guardduty:DeclineInvitations",
+                "guardduty:Del*",
+                "guardduty:Di*",
+                "guardduty:EnableOrganizationAdminAccount",
+                "guardduty:InviteMembers",
+                "guardduty:S*",
+                "guardduty:TagResource",
+                "guardduty:Un*",
+                "securityhub:A*",
+                "securityhub:B*",
+                "securityhub:C*",
+                "securityhub:DeclineInvitations",
+                "securityhub:Del*",
+                "securityhub:Di*",
+                "securityhub:E*",
+                "securityhub:GetEnabledStandards",
+                "securityhub:InviteMembers",
+                "securityhub:ListEnabledProductsForImport",
+                "securityhub:TagResource",
+                "securityhub:U*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/aws-controltower-ConfigRecorderRole"
+                    ]
+                },
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                }
+             }
+        },
+        {
+            "Sid": "ProtectLayers",
+            "Effect": "Deny",
+            "Action": [
+                "lambda:AddLayerVersionPermission",
+                "lambda:DeleteLayerVersion",
+                "lambda:RemoveLayerVersionPermission",
+                "lambda:PublishLayerVersion"
+            ],
+            "Resource": [
+                "arn:aws:lambda:*:*:layer:protected-*"
+            ],
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+             }
+        },
+        {
+            "Sid": "DenyIAMUserAndGroups",
+            "Effect": "Deny",
+            "Action": [
+                "iam:*Group*",
+                "iam:*User*",
+                "iam:*ServiceSpecificCredential*",
+                "iam:*Login*",
+                "iam:*OpenID*",
+                "iam:Create*Account*",
+                "iam:Update*Account*",
+                "iam:Delete*Account*",
+                "iam:*SAML*",
+                "iam:*MFA*",
+                "iam:*Key*",
+                "iam:*Certificate*",
+                "iam:ChangePassword*",
+                "iam:SetSecurityTokenServicePreferences",
+                "iam:{Exclude:ListAccessKeys}",
+                "iam:{Exclude:ListAttachedGroupPolicies}",
+                "iam:{Exclude:ListAttachedUsersPolicies}",
+                "iam:{Exclude:ListGroupPolicies}",
+                "iam:{Exclude:ListGroups}",
+                "iam:{Exclude:ListGroupForUsers}",
+                "iam:{Exclude:ListMFADeviceTags}",
+                "iam:{Exclude:ListMFADevices}",
+                "iam:{Exclude:ListOpenIDConnectProviderTags}",
+                "iam:{Exclude:ListOpenIDConnectProviders}",
+                "iam:{Exclude:ListSAMLProviderTags}",
+                "iam:{Exclude:ListSAMLProviders}",
+                "iam:{Exclude:ListServerCertificates}",
+                "iam:{Exclude:ListServiceSpecificCredentials}",
+                "iam:{Exclude:ListSigningCertificates}",
+                "iam:{Exclude:ListSSHPublicKeys}",
+                "iam:{Exclude:ListUserPolicies}",
+                "iam:{Exclude:ListUserTags}",
+                "iam:{Exclude:ListUsers}",
+                "iam:{Exclude:ListVirtualMFADevices}"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/aws-controltower-ConfigRecorderRole"
+                    ]
+                },
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                }
+             }
+        },
+        {
+            "Sid": "ProtectAssumeAdministrativeRoles",
+            "Effect": "Deny",
+            "Action": [
+                "sts:AssumeRole"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/aws-controltower*",
+                "arn:aws:iam::*:role/AWSControlTowerExecution"
+            ],
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+             }
+        },
+        {
+            "Sid": "AllowAccessOnlyTo3Regions",
+            "Effect": "Deny",
+            "NotAction": [
+                "a4b:*",
+                "acm:*",
+                "aws-marketplace-management:*",
+                "aws-marketplace:*",
+                "aws-portal:*",
+                "budgets:*",
+                "ce:*",
+                "chime:*",
+                "cloudfront:*",
+                "config:*",
+                "cur:*",
+                "directconnect:*",
+                "ec2:DescribeRegions",
+                "ec2:DescribeTransitGateways",
+                "ec2:DescribeVpnGateways",
+                "fms:*",
+                "globalaccelerator:*",
+                "health:*",
+                "iam:*",
+                "importexport:*",
+                "kms:*",
+                "mobileanalytics:*",
+                "networkmanager:*",
+                "organizations:*",
+                "pricing:*",
+                "route53:*",
+                "route53domains:*",
+                "s3:GetAccountPublic*",
+                "s3:ListAllMyBuckets",
+                "s3:PutAccountPublic*",
+                "shield:*",
+                "sts:*",
+                "support:*",
+                "trustedadvisor:*",
+                "waf-regional:*",
+                "waf:*",
+                "wafv2:*",
+                "wellarchitected:*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringNotEquals": {
+                    "aws:RequestedRegion": [
+                        "us-east-1",
+                        "us-west-2",
+                        "eu-central-1"
+                    ]
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "DenyGrantForKMS",
+            "Effect": "Deny",
+            "Action": [
+                "kms:RevokeGrant",
+                "kms:CreateGrant"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "Bool": {
+                    "kms:GrantIsForAWSResource": "false"
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "ProtectResources",
+            "Effect": "Deny",
+            "Action": [
+                "sns:{Permissions management}",
+                "sns:{Write}",
+                "sns:{Tagging}",
+                "sns:{Exclude:Publish}",
+                "kms:{Write}",
+                "kms:{Exclude:GenerateDataKey}",
+                "kms:{Permissions management}",
+                "kms:{Tagging}",
+                "iam:{Write}",
+                "iam:{Permissions management}",
+                "sts:AssumeRole*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                },
+                "StringEquals": {
+                    "aws:ResourceTag/Team": "TeamA"
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/aws-controltower-ConfigRecorderRole",
+                        "arn:aws:iam::*:role/stacksets-exec-*"
+                    ]
+                }
+            }
+        },
+         {
+            "Sid": "ProtectTagsOn",
+            "Effect": "Deny",
+            "Action": "iam:{Tagging}",
+            "Resource": "*",
+            "Condition": {
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                },
+                "StringEquals": {
+                    "aws:ResourceTag/Team": [
+                        "TeamA"
+                    ]
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/aws-controltower-ConfigRecorderRole"
+                    ]
+                }
+            }
+        },
+        {
+            "Comments": [
+                "This statement allows team roles to add data perimeter exceptions to any principal that is",
+                "tagged with TeamA."
+            ],
+            "Sid": "ProtectModificationOfTags",
+            "Effect": "Deny",
+            "Action": [
+                "iam:{Tagging}",
+                "kms:{Tagging}",
+                "sns:{Tagging}"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                },
+                "StringEquals": {
+                    "aws:RequestTag/Team": "TeamA"
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/stacksets-exec-*"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "ProtectRolesWithoutTeamATag",
+            "Effect": "Deny",
+            "Action": [
+                "iam:Create*",
+                "iam:Update*",
+                "iam:Delete*",
+                "iam:UntagRole",
+                "iam:TagRole",
+                "iam:PutRole*",
+                "iam:AttachRolePolicy",
+                "iam:PassRole",
+                "iam:DetachRolePolicy"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/*AWSControlTower*",
+                "arn:aws:iam::*:role/aws-controltower*",
+                "arn:aws:iam::*:role/aws-reserved/*",
+                "arn:aws:iam::*:role/AwsSecurityAudit",
+                "arn:aws:iam::*:role/Isengard*",
+                "arn:aws:iam::*:role/XenaAuditorRole*",
+                "arn:aws:iam::*:role/stacksets-exec-*"
+            ],
+            "Condition": {     
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution",
+                        "arn:aws:iam::*:role/stacksets-exec-*"
+                    ]
+                },
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                }
+            }                       
+        },
+        {
+            "Sid": "PreventSensitiveOrganizationsActions",
+            "Effect": "Deny",
+            "Action": [
+                "organizations:LeaveOrganization",
+                "organizations:CloseAccount"
+            ],
+            "Resource": "*",
+            "Condition": {     
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+            }      
+        },
+        {
+            "Sid": "DenyRootAccess",
+            "Effect": "Deny",
+            "Action": "*",
+            "Resource": "*",
+            "Condition": {
+                "ArnLike": {
+                    "aws:PrincipalArn": "arn:aws:iam::*:root"
+                }
+            }
+        },
+        {
+            "Sid": "ProtectDynamoDBTables",
+            "Effect": "Deny",
+            "Action": "dynamodb:*",
+            "Resource": [
+                "arn:aws:dynamodb:*:*:table/protected-*"
+            ],
+            "Condition": {
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": "arn:aws:iam::*:role/AWSControlTowerExecution"
+                },
+                "StringNotEqualsIfExists": {
+                    "aws:PrincipalTag/Team": "TeamA"
+                }
+            }
+        },
+        {
+            "Sid": "DenyVPCLink",
+            "Effect": "Deny",
+            "Action": [
+              "apigateway:POST",
+              "apigateway:PUT",
+              "apigateway:PATCH"
+            ],
+            "Resource": [
+              "arn:aws:apigateway:*::/vpclinks",
+              "arn:aws:apigateway:*::/vpclinks/*"
+            ]
+          },
+          {
+            "Sid": "DenyUpdatePolicyOnObject",
+            "Effect": "Deny",
+            "Action": [
+                "s3:PutObjectAcl"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringNotEquals": {
+                    "s3:x-amz-acl": "bucket-owner-full-control"
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+            }
+        }
+    ]
+}

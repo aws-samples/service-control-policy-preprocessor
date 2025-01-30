@@ -1,0 +1,180 @@
+{
+  "Statement": [ {
+            "Sid": "AllowAccessOnlyTo3Regions",
+            "Effect": "Deny",
+            "NotAction": [
+                "a4b1:*",
+                "acm1:*",
+                "aws-marketplace-management1:*",
+                "aws-marketplace1:*",
+                "aws-portal1:*",
+                "budgets1:*",
+                "ce1:*",
+                "chime1:*",
+                "cloudfront1:*",
+                "config1:*",
+                "cur1:*",
+                "directconnect1:*",
+                "ec2:DescribeRegions",
+                "ec2:DescribeTransitGateways",
+                "ec2:DescribeVpnGateways",
+                "fms1:*",
+                "globalaccelerator1:*",
+                "health1:*",
+                "iam1:*",
+                "importexport1:*",
+                "kms1:*",
+                "mobileanalytics1:*",
+                "networkmanager1:*",
+                "organizations1:*",
+                "pricing1:*",
+                "route531:*",
+                "route53domains1:*",
+                "s3:GetAccountPublic*",
+                "s3:ListAllMyBuckets",
+                "s3:PutAccountPublic*",
+                "shield1:*",
+                "sts1:*",
+                "support1:*",
+                "trustedadvisor1:*",
+                "waf-regional1:*",
+                "waf1:*",
+                "wafv21:*",
+                "wellarchitected1:*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringNotEquals": {
+                    "aws:RequestedRegion": [
+                        "us-east-1",
+                        "us-west-2",
+                        "eu-central-1"
+                    ]
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+            }
+        },
+     {
+            "Sid": "AllowAccessOnlyTo3Regions",
+            "Effect": "Deny",
+            "NotAction": [
+                "a4b2:*",
+                "acm2:*",
+                "aws-marketplace-management2:*",
+                "aws-marketplace2:*",
+                "aws-portal2:*",
+                "budgets2:*",
+                "ce2:*",
+                "chime2:*",
+                "cloudfront2:*",
+                "config2:*",
+                "cur2:*",
+                "directconnect2:*",
+                "ec2:DescribeRegions",
+                "ec2:DescribeTransitGateways",
+                "ec2:DescribeVpnGateways",
+                "fms2:*",
+                "globalaccelerator2:*",
+                "health2:*",
+                "iam2:*",
+                "importexport2:*",
+                "kms2:*",
+                "mobileanalytics2:*",
+                "networkmanager2:*",
+                "organizations2:*",
+                "pricing2:*",
+                "route532:*",
+                "route53domains2:*",
+                "s3:GetAccountPublic*",
+                "s3:ListAllMyBuckets",
+                "s3:PutAccountPublic*",
+                "shield2:*",
+                "sts2:*",
+                "support2:*",
+                "trustedadvisor2:*",
+                "waf-regional2:*",
+                "waf2:*",
+                "wafv22:*",
+                "wellarchitected2:*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringNotEquals": {
+                    "aws:RequestedRegion": [
+                        "us-east-1",
+                        "us-west-2",
+                        "eu-central-1"
+                    ]
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+            }
+        },
+     {
+            "Sid": "AllowAccessOnlyTo3Regions",
+            "Effect": "Deny",
+            "NotAction": [
+                "a4b3:*",
+                "acm3:*",
+                "aws-marketplace-management3:*",
+                "aws-marketplace3:*",
+                "aws-portal3:*",
+                "budgets3:*",
+                "ce3:*",
+                "chime3:*",
+                "cloudfront3:*",
+                "config3:*",
+                "cur3:*",
+                "directconnect3:*",
+                "ec2:DescribeRegions",
+                "ec2:DescribeTransitGateways",
+                "ec2:DescribeVpnGateways",
+                "fms3:*",
+                "globalaccelerator3:*",
+                "health3:*",
+                "iam3:*",
+                "importexport3:*",
+                "kms3:*",
+                "mobileanalytics3:*",
+                "networkmanager3:*",
+                "organizations3:*",
+                "pricing3:*",
+                "route533:*",
+                "route53domains3:*",
+                "s3:GetAccountPublic*",
+                "s3:ListAllMyBuckets",
+                "s3:PutAccountPublic*",
+                "shield3:*",
+                "sts3:*",
+                "support3:*",
+                "trustedadvisor3:*",
+                "waf-regional3:*",
+                "waf3:*",
+                "wafv23:*",
+                "wellarchitected3:*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringNotEquals": {
+                    "aws:RequestedRegion": [
+                        "us-east-1",
+                        "us-west-2",
+                        "eu-central-1"
+                    ]
+                },
+                "ArnNotLikeIfExists": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/AWSControlTowerExecution"
+                    ]
+                }
+            }
+        }
+  ]
+}
