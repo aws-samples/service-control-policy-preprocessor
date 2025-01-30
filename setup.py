@@ -29,7 +29,7 @@ setuptools.setup(
     description="Preprocesses SCPs.",
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
-    url='https://github.com/awslabs/scp-preprocesser',
+    url='https://github.com/aws-samples/service-control-policy-preprocessor',
     keywords='scp-preprocess aws iam SCP service control policy',
     license='MIT-0',
     classifiers=[
