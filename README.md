@@ -9,7 +9,7 @@ Installation:
 Python 3.6+ is supported.
 
 ```
-pip install scp-preprocessor
+pip install service-control-policy-preprocessor
 ```
 
 Basic usage:
