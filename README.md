@@ -1,6 +1,8 @@
 ## Service Control Policy (SCP) preprocessor
 
-A command line tool that takes a single JSON file and outputs a collection of valid service control policies. This allows you to organize your SCPs logically and write statements in a way that makes sense to you without directly worrying about size constraints. The tool will then handle optimization and bin packing of your single JSON file into a collection of SCPs that fit the size limits.  The tool also introduces some new SCP language concepts that are explained below. The resultant SCPs are written to std out.
+A command line tool that takes a single JSON file and outputs a collection of valid service control policies. This allows you to organize your SCPs logically and write statements in a way that makes sense to you without directly worrying about size constraints. The tool will then handle optimization and bin packing of your single JSON file into a collection of SCPs that fit the size limits.  The tool also introduces some new SCP language concepts that are explained below. 
+
+The resultant SCPs are written to std out as an array of SCPs.
 
 ### Getting Started
 
