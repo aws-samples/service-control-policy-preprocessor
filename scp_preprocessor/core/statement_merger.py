@@ -22,7 +22,7 @@ def _merge_statements(statements):
 			statement = statements[j]
 
 			if _compare(statement_to_compare, statement):
-				merged_statement = _merge_action_or_non_action(statement_to_compare, statement)
+				merged_statement = _merge_actions(statement_to_compare, statement)
 				statement_to_compare = merged_statement
 
 				indices_that_were_merged.update([i, j])
@@ -32,23 +32,18 @@ def _merge_statements(statements):
 	return merged_statements
 
 
-def _merge_action_or_non_action(statement1, statement2):
-	if 'Action' in statement1:
-		action_key = 'Action'
-	elif 'NotAction' in statement1:
-		action_key = 'NotAction'
-
-	statement1_actions = statement1[action_key]
+def _merge_actions(statement1, statement2):
+	statement1_actions = statement1['Action']
 	if not isinstance(statement1_actions, list):
 		statement1_actions = [statement1_actions]
 
-	statement2_actions = statement2[action_key]
+	statement2_actions = statement2['Action']
 	if not isinstance(statement2_actions, list):
 		statement2_actions = [statement2_actions]
 
 	statement1_actions.extend(statement2_actions)
 
-	statement1[action_key] = statement1_actions
+	statement1['Action'] = statement1_actions
 
 	return statement1
 
@@ -58,7 +53,7 @@ def _compare(statement1, statement2):
 	resources_are_equal = statement1.get('Resource') == statement2.get('Resource')
 	effects_are_equal = statement1.get('Effect') == statement2.get('Effect')
 
-	both_have_not_action_or_action = ('Action' in statement1 and 'Action' in statement2) or \
-									 ('NotAction' in statement1 and 'NotAction' in statement2)
+	# we should not merge NotAction statements as this changes the policy outcome
+	both_have_action = 'Action' in statement1 and 'Action' in statement2
 
-	return conditions_are_equal and resources_are_equal and effects_are_equal and both_have_not_action_or_action
+	return conditions_are_equal and resources_are_equal and effects_are_equal and both_have_action

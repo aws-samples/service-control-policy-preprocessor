@@ -233,3 +233,26 @@ class WhenMergingUnlikeStatements(MainTest):
 
 		first_policy = result[0]
 		self.assertEqual(first_policy, expected_policy)
+
+
+	def test_does_not_merge_not_action_statements(self):
+		policy = {
+			'Version': '2012-10-17',
+			'Statement': [{
+				'Effect': 'Allow',
+				'NotAction': 's3:PutObject',
+				'Resource': '*'
+			}, {
+				'Effect': 'Allow',
+				'NotAction': 's3:GetObject',
+				'Resource': '*'
+			}]
+		}
+
+		expected_policy = copy.deepcopy(policy)
+
+		result = self.run_test(policy)
+		self.assertEqual(len(result), 1)
+
+		first_policy = result[0]
+		self.assertEqual(first_policy, expected_policy)
